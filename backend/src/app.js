@@ -17,6 +17,15 @@ const documentsRoutes = require('./routes/documents.routes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+function createInternalErrorResponse() {
+  return {
+    error: {
+      code: 'INTERNAL_ERROR',
+      message: 'Ocorreu um erro interno.'
+    }
+  };
+}
+
 app.use(express.json());
 app.use(documentsRoutes);
 
@@ -43,12 +52,7 @@ app.use((error, req, res, next) => {
     return next(error);
   }
 
-  return res.status(500).json({
-    error: {
-      code: 'DOWNLOAD_FAILED',
-      message: 'Não foi possível baixar o documento.'
-    }
-  });
+  return res.status(500).json(createInternalErrorResponse());
 });
 
 if (require.main === module) {

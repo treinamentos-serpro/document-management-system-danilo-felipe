@@ -4,16 +4,19 @@ function sendError(res, status, code, message) {
   return res.status(status).json({ error: { code, message } });
 }
 
+async function discardUploadedFileSilently(file) {
+  try {
+    await documentsService.discardUploadedFile(file);
+  } catch {
+    return;
+  }
+}
+
 async function uploadDocument(req, res) {
   const owner = req.get('X-User-Id')?.trim();
 
   if (!owner) {
-    try {
-      await documentsService.discardUploadedFile(req.file);
-    } catch {
-      return sendError(res, 500, 'UPLOAD_FAILED', 'Não foi possível salvar o documento.');
-    }
-
+    await discardUploadedFileSilently(req.file);
     return sendError(res, 400, 'MISSING_USER_ID', 'O cabeçalho X-User-Id é obrigatório.');
   }
 
