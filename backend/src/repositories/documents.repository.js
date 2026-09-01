@@ -1,9 +1,6 @@
 const fs = require('fs/promises');
 const path = require('path');
-
-const storageDirectory = path.resolve(
-  process.env.STORAGE_DIR || path.join(__dirname, '../../storage')
-);
+const { storageDirectory } = require('../config/storage');
 const documents = [];
 
 function save(document) {

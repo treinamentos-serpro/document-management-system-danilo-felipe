@@ -28,6 +28,7 @@ async function uploadDocument(req, res) {
     const document = await documentsService.createDocument({ file: req.file, owner });
     return res.status(201).json(document);
   } catch (error) {
+    await discardUploadedFileSilently(req.file);
     return sendError(res, 500, error.code || 'UPLOAD_FAILED', 'Não foi possível salvar o documento.');
   }
 }

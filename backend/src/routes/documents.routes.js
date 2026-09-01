@@ -1,13 +1,9 @@
 const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const multer = require('multer');
 const documentsController = require('../controllers/documents.controller');
-
-const storageDirectory = path.resolve(
-  process.env.STORAGE_DIR || path.join(__dirname, '../../storage')
-);
-const maxFileSize = Number(process.env.MAX_FILE_SIZE_BYTES) || 10 * 1024 * 1024;
+const path = require('path');
+const { maxFileSize, storageDirectory } = require('../config/storage');
 
 fs.mkdirSync(storageDirectory, { recursive: true });
 
