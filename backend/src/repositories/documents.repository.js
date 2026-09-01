@@ -20,7 +20,11 @@ function findAll() {
 }
 
 async function findFilePath(document) {
-  const filePath = path.join(storageDirectory, document.storedName);
+  const filePath = resolveStoragePath(document.storedName);
+
+  if (!filePath) {
+    return null;
+  }
 
   try {
     await fs.access(filePath);
@@ -31,12 +35,39 @@ async function findFilePath(document) {
 }
 
 async function removeStoredFile(storedName) {
+  const filePath = resolveStoragePath(storedName);
+
+  if (!filePath) {
+    return;
+  }
+
   try {
-    await fs.unlink(path.join(storageDirectory, storedName));
+    await fs.unlink(filePath);
   } catch (error) {
     if (error.code !== 'ENOENT') {
       throw error;
     }
+  }
+
+  function resolveStoragePath(storedName) {
+    if (typeof storedName !== 'string' || !storedName.trim()) {
+      return null;
+    }
+
+    const normalizedStoredName = path.basename(storedName);
+
+    if (normalizedStoredName !== storedName) {
+      return null;
+    }
+
+    const filePath = path.resolve(storageDirectory, normalizedStoredName);
+    const expectedPrefix = `${storageDirectory}${path.sep}`;
+
+    if (!filePath.startsWith(expectedPrefix)) {
+      return null;
+    }
+
+    return filePath;
   }
 }
 

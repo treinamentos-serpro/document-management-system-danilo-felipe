@@ -4,6 +4,7 @@ const express = require('express');
 const multer = require('multer');
 const documentsController = require('../controllers/documents.controller');
 const { maxFileSize, storageDirectory } = require('../config/storage');
+const rateLimitMiddleware = require('./rate-limit.middleware');
 
 fs.mkdirSync(storageDirectory, { recursive: true });
 
@@ -19,8 +20,8 @@ const upload = multer({
 
 const router = express.Router();
 
-router.post('/upload', upload.single('file'), documentsController.uploadDocument);
+router.post('/upload', rateLimitMiddleware, upload.single('file'), documentsController.uploadDocument);
 router.get('/documents', documentsController.listDocuments);
-router.get('/documents/:id/download', documentsController.downloadDocument);
+router.get('/documents/:id/download', rateLimitMiddleware, documentsController.downloadDocument);
 
 module.exports = router;
