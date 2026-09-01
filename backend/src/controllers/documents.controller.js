@@ -29,7 +29,12 @@ async function uploadDocument(req, res) {
     return res.status(201).json(document);
   } catch (error) {
     await discardUploadedFileSilently(req.file);
-    return sendError(res, 500, error.code || 'UPLOAD_FAILED', 'Não foi possível salvar o documento.');
+    return sendError(
+      res,
+      500,
+      error.code || 'UPLOAD_FAILED',
+      error.message || 'Não foi possível salvar o documento.'
+    );
   }
 }
 
