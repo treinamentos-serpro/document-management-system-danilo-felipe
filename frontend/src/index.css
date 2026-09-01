@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply min-w-80 bg-slate-100 font-sans text-slate-900 antialiased;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button:focus-visible,
+  input:focus-visible {
+    @apply outline-none ring-2 ring-sky-500 ring-offset-2;
+  }
+}
